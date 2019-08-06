@@ -10,14 +10,14 @@ namespace ExcelReader
         private Application _excelApp;
         private Workbook _workBook;
 
-        public ExcelFileManager(string filePath)
-        {
-            _filePath = filePath;
+        public ExcelFileManager()
+        {            
             _excelApp = new Application();
         }
 
-        public List<SheetInfo> GetFileSheets()
+        public List<SheetInfo> GetFileSheets(string filePath)
         {
+            _filePath = filePath;
             SetWorkBook();
             List<SheetInfo> sheets = new List<SheetInfo>();
 
@@ -27,28 +27,27 @@ namespace ExcelReader
             {
                 Worksheet workSheet = (Worksheet)_workBook.Sheets[sheetNumber];
 
-                sheets.Add(new SheetInfo { PageNumber = sheetNumber, Name = workSheet.Name });               
-            }           
+                sheets.Add(new SheetInfo { PageNumber = sheetNumber, Name = workSheet.Name });
+            }
 
             return sheets;
         }
-        
-        public Dictionary<string, List<Dictionary<string, string>>> GetPageContent(Dictionary<string, int> sheets)
+
+        public Dictionary<string, List<Dictionary<string, string>>> GetPageContent(List<SheetInfo> sheets)
         {
             if (_workBook == null)
             {
                 SetWorkBook();
             }
 
-            //List<List<Dictionary<string, string>>> workSheetValues = new List<List<Dictionary<string, string>>>();
             Dictionary<string, List<Dictionary<string, string>>> workSheetValues = new Dictionary<string, List<Dictionary<string, string>>>();
 
-            foreach (KeyValuePair<string, int> sheet in sheets)
+            foreach (SheetInfo sheet in sheets)
             {
-                int pageNumber = sheet.Value;
+                int pageNumber = sheet.PageNumber;
 
                 Worksheet workSheet = (Worksheet)_workBook.Sheets[pageNumber];
-                if (workSheet.Name != sheet.Key)
+                if (workSheet.Name != sheet.Name)
                 {
                     continue;
                 }
@@ -59,7 +58,7 @@ namespace ExcelReader
 
                 List<Dictionary<string, string>> sheetValues = new List<Dictionary<string, string>>();
 
-                for (int i = 2; i < valueArray.GetLength(1); i++)
+                for (int i = 2; i < valueArray.GetLength(0) +1; i++)
                 {
                     Dictionary<string, string> values = new Dictionary<string, string>();
                     for (int j = 1; j < valueArray.GetLength(1) + 1; j++)
