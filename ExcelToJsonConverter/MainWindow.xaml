@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Button Content="Select File to Upload" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="125" Click="Button_Click"/>
+        <Label Content="File Path" HorizontalAlignment="Left" Margin="178,22,0,0" VerticalAlignment="Top" Width="495" Name="filePath"/>
     </Grid>
 </Window>

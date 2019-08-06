@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using ExcelReader;
-using Newtonsoft.Json;
+﻿using System.Windows;
+using Microsoft.Win32;
 
 namespace ExcelToJsonConverter
 {
@@ -14,13 +12,26 @@ namespace ExcelToJsonConverter
         {
             InitializeComponent();
 
-            string path = @"";
-            ExcelFileManager em = new ExcelFileManager(path);
-            Dictionary<string, int> sheets = em.GetFileSheets();
+            //string path = @"C:\Users\ivans\Downloads\ESI Catalog_20190805.xlsx";
+            //ExcelFileManager em = new ExcelFileManager(path);
+            //Dictionary<string, int> sheets = em.GetFileSheets();
 
-            var content = em.GetPageContent(sheets);
+            //var content = em.GetPageContent(sheets);
 
-            var json = JsonConvert.SerializeObject(content);
+            //var json = JsonConvert.SerializeObject(content);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string path = string.Empty;
+            filePath.Content = path;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                path = openFileDialog.FileName;
+                filePath.Content = path;
+            }
         }
     }
 }
