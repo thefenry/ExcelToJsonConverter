@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using ExcelReader;
@@ -18,7 +20,7 @@ namespace ExcelToJsonConverter
         {
             InitializeComponent();
             _excelFileMgr = new ExcelFileManager();
-          
+
             DataContext = this;
         }
 
@@ -34,7 +36,7 @@ namespace ExcelToJsonConverter
                 filePath.Content = _path;
 
                 availableSheets.Clear();
-                foreach (var sheet in _excelFileMgr.GetFileSheets(_path))
+                foreach (SheetInfo sheet in _excelFileMgr.GetFileSheets(_path))
                 {
                     availableSheets.Add(sheet);
                 }
@@ -62,9 +64,21 @@ namespace ExcelToJsonConverter
 
         private void ConvertToJSON_Click(object sender, RoutedEventArgs e)
         {
-            var content = _excelFileMgr.GetPageContent(sheetsToGetDataFrom);
+            Dictionary<string, List<Dictionary<string, string>>> content = _excelFileMgr.GetPageContent(sheetsToGetDataFrom);
 
-            var json = JsonConvert.SerializeObject(content);
+            string json = JsonConvert.SerializeObject(content);
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = $"export-{DateTime.UtcNow.ToString("yyyyMMdd")}",
+                DefaultExt = ".json",
+                Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllText(saveFileDialog.FileName, json);
+            }
         }
     }
 }
